@@ -55,6 +55,156 @@ void no::setinfo(int info)
     this->info = info;
 }
 
+// metodos da classe Btree
+
+BTreeNode::BTreeNode(int _t, bool _leaf) {
+	t = _t;
+	leaf = _leaf;
+
+	keys = new int[2 * t - 1];
+	C = new BTreeNode *[2 * t];
+
+	n = 0;
+}
+
+// Método para percorrer os nós
+void BTreeNode::traverse() {
+	// Implementação básica para percorrer e imprimir chaves
+	int i;
+	for (i = 0; i < n; i++) {
+		if (!leaf)
+			C[i]->traverse();
+		cout << " " << keys[i];
+	}
+
+	if (!leaf)
+		C[i]->traverse();
+}
+
+int BTreeNode::getKey(int idx) {
+	if (idx >= 0 && idx < n) {
+		return keys[idx];
+	} else {
+		// Lançar exceção ou tratar erro
+	}
+}
+
+BTreeNode* BTreeNode::getChild(int idx) {
+	if (idx >= 0 && idx <= n) {
+		return C[idx];
+	} else {
+		// Lançar exceção ou tratar erro
+	}
+}
+
+void BTreeNode::setKey(int idx, int key) {
+	if (idx >= 0 && idx < n) {
+		keys[idx] = key;
+	} else {
+		// Lançar exceção ou tratar erro
+	}
+}
+
+void BTreeNode::setChild(int idx, BTreeNode* child) {
+	if (idx >= 0 && idx <= n) {
+		C[idx] = child;
+	} else {
+		// Lançar exceção ou tratar erro
+	}
+}
+
+int BTreeNode::getNumKeys() {
+	return n;
+}
+
+bool BTreeNode::isLeaf() {
+	return leaf;
+}
+
+void BTree::insert(int k) {
+	// Se a árvore está vazia
+	if (root == nullptr) {
+		root = new BTreeNode(t, true);
+		root->keys[0] = k;  // Inserir chave
+		root->n = 1;  // Atualizar número de chaves no nó
+	} else {
+		// Se o nó está cheio, ele deve ser dividido
+		if (root->n == 2 * t - 1) {
+			// Implementar a lógica de divisão aqui
+		} else {
+			// Inserir em um nó que não está cheio
+			insertNonFull(root, k);
+		}
+	}
+}
+
+void BTree::splitChild(BTreeNode *node, int i) {
+	BTreeNode *fullNode = node->C[i];
+	BTreeNode *newNode = new BTreeNode(fullNode->t, fullNode->leaf);
+	newNode->n = t - 1;
+
+	// Copia as últimas (t-1) chaves de fullNode para newNode
+	for (int j = 0; j < t - 1; j++) {
+		newNode->keys[j] = fullNode->keys[j + t];
+	}
+
+	// Copia os últimos t filhos de fullNode para newNode, se não for folha
+	if (!fullNode->leaf) {
+		for (int j = 0; j < t; j++) {
+			newNode->C[j] = fullNode->C[j + t];
+		}
+	}
+
+	fullNode->n = t - 1; // Reduz o número de chaves em fullNode
+
+	// Move os filhos de node para dar espaço ao novo filho
+	for (int j = node->n; j >= i + 1; j--) {
+		node->C[j + 1] = node->C[j];
+	}
+
+	// Linka o novo filho a node
+	node->C[i + 1] = newNode;
+
+	// Move as chaves de node para dar espaço à nova chave
+	for (int j = node->n - 1; j >= i; j--) {
+		node->keys[j + 1] = node->keys[j];
+	}
+
+	// Copia a chave do meio de fullNode para node
+	node->keys[i] = fullNode->keys[t - 1];
+
+	// Incrementa o número de chaves em node
+	node->n = node->n + 1;
+}
+
+void BTree::insertNonFull(BTreeNode *node, int k) {
+	int i = node->n - 1;
+
+	if (node->leaf) {
+		while (i >= 0 && node->keys[i] > k) {
+			node->keys[i + 1] = node->keys[i];
+			i--;
+		}
+		node->keys[i + 1] = k;
+		node->n = node->n + 1;
+	} else {
+		while (i >= 0 && node->keys[i] > k) {
+			i--;
+		}
+
+		// Verifica se o filho encontrado está cheio
+		if (node->C[i + 1]->n == 2 * t - 1) {
+			splitChild(node, i + 1);
+
+			if (k > node->keys[i + 1]) {
+				i++;
+			}
+		}
+		insertNonFull(node->C[i + 1], k);
+	}
+}
+
+
 
 
 //metodos classe tree
