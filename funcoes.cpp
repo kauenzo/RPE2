@@ -2,6 +2,7 @@
 
 //metodos classe no
 
+/*
 no::no()
 {
 
@@ -54,159 +55,11 @@ void no::setinfo(int info)
 {
     this->info = info;
 }
+*/
 
 // metodos da classe Btree
 
-BTreeNode::BTreeNode(int _t, bool _leaf) {
-	t = _t;
-	leaf = _leaf;
-
-	keys = new int[2 * t - 1];
-	C = new BTreeNode *[2 * t];
-
-	n = 0;
-}
-
-// Método para percorrer os nós
-void BTreeNode::traverse() {
-	// Implementação básica para percorrer e imprimir chaves
-	int i;
-	for (i = 0; i < n; i++) {
-		if (!leaf)
-			C[i]->traverse();
-		cout << " " << keys[i];
-	}
-
-	if (!leaf)
-		C[i]->traverse();
-}
-
-int BTreeNode::getKey(int idx) {
-	if (idx >= 0 && idx < n) {
-		return keys[idx];
-	} else {
-		// Lançar exceção ou tratar erro
-	}
-}
-
-BTreeNode* BTreeNode::getChild(int idx) {
-	if (idx >= 0 && idx <= n) {
-		return C[idx];
-	} else {
-		// Lançar exceção ou tratar erro
-	}
-}
-
-void BTreeNode::setKey(int idx, int key) {
-	if (idx >= 0 && idx < n) {
-		keys[idx] = key;
-	} else {
-		// Lançar exceção ou tratar erro
-	}
-}
-
-void BTreeNode::setChild(int idx, BTreeNode* child) {
-	if (idx >= 0 && idx <= n) {
-		C[idx] = child;
-	} else {
-		// Lançar exceção ou tratar erro
-	}
-}
-
-int BTreeNode::getNumKeys() {
-	return n;
-}
-
-bool BTreeNode::isLeaf() {
-	return leaf;
-}
-
-void BTree::insert(int k) {
-	// Se a árvore está vazia
-	if (root == nullptr) {
-		root = new BTreeNode(t, true);
-		root->keys[0] = k;  // Inserir chave
-		root->n = 1;  // Atualizar número de chaves no nó
-	} else {
-		// Se o nó está cheio, ele deve ser dividido
-		if (root->n == 2 * t - 1) {
-			// Implementar a lógica de divisão aqui
-		} else {
-			// Inserir em um nó que não está cheio
-			insertNonFull(root, k);
-		}
-	}
-}
-
-void BTree::splitChild(BTreeNode *node, int i) {
-	BTreeNode *fullNode = node->C[i];
-	BTreeNode *newNode = new BTreeNode(fullNode->t, fullNode->leaf);
-	newNode->n = t - 1;
-
-	// Copia as últimas (t-1) chaves de fullNode para newNode
-	for (int j = 0; j < t - 1; j++) {
-		newNode->keys[j] = fullNode->keys[j + t];
-	}
-
-	// Copia os últimos t filhos de fullNode para newNode, se não for folha
-	if (!fullNode->leaf) {
-		for (int j = 0; j < t; j++) {
-			newNode->C[j] = fullNode->C[j + t];
-		}
-	}
-
-	fullNode->n = t - 1; // Reduz o número de chaves em fullNode
-
-	// Move os filhos de node para dar espaço ao novo filho
-	for (int j = node->n; j >= i + 1; j--) {
-		node->C[j + 1] = node->C[j];
-	}
-
-	// Linka o novo filho a node
-	node->C[i + 1] = newNode;
-
-	// Move as chaves de node para dar espaço à nova chave
-	for (int j = node->n - 1; j >= i; j--) {
-		node->keys[j + 1] = node->keys[j];
-	}
-
-	// Copia a chave do meio de fullNode para node
-	node->keys[i] = fullNode->keys[t - 1];
-
-	// Incrementa o número de chaves em node
-	node->n = node->n + 1;
-}
-
-void BTree::insertNonFull(BTreeNode *node, int k) {
-	int i = node->n - 1;
-
-	if (node->leaf) {
-		while (i >= 0 && node->keys[i] > k) {
-			node->keys[i + 1] = node->keys[i];
-			i--;
-		}
-		node->keys[i + 1] = k;
-		node->n = node->n + 1;
-	} else {
-		while (i >= 0 && node->keys[i] > k) {
-			i--;
-		}
-
-		// Verifica se o filho encontrado está cheio
-		if (node->C[i + 1]->n == 2 * t - 1) {
-			splitChild(node, i + 1);
-
-			if (k > node->keys[i + 1]) {
-				i++;
-			}
-		}
-		insertNonFull(node->C[i + 1], k);
-	}
-}
-
-
-
-
+/*
 //metodos classe tree
 
 
@@ -503,4 +356,156 @@ void tree::menu()
     cout<<"\n#                                                                   #";
     cout<<"\n#####################################################################";
 }
+*/
 
+NoB::NoB(int _t, bool _folha) {
+	t = _t;
+	folha = _folha;
+
+	// Reserva espaço para o número máximo de chaves e filhos possíveis
+	chaves.resize(2*t-1);
+	filhos.resize(2*t);
+}
+
+// Método para inserir uma chave em um nó não-cheio
+void NoB::inserirNaoCheio(int k) {
+    int i = chaves.size() - 1;
+
+    if (folha) {
+        // Encontra a localização da nova chave e move todas as chaves maiores um espaço à frente
+        while (i >= 0 && chaves[i] > k) {
+            chaves[i + 1] = chaves[i];
+            i--;
+        }
+
+        // Insere a nova chave no local encontrado
+        chaves[i + 1] = k;
+    } else {
+        // Encontra o filho que vai ter a nova chave
+        while (i >= 0 && chaves[i] > k)
+            i--;
+
+        // Verifica se o filho encontrado está cheio
+        if (filhos[i + 1]->chaves.size() == 2 * t - 1) {
+            // Se o filho está cheio, então divide-o
+            dividirFilho(i + 1, filhos[i + 1]);
+
+            // Depois da divisão, o filho do meio de filhos[i] sobe e filhos[i] é dividido em dois.
+            // Vê qual dos dois vai ter a nova chave
+            if (chaves[i + 1] < k)
+                i++;
+        }
+        filhos[i + 1]->inserirNaoCheio(k);
+    }
+}
+
+// Método para dividir o filho y de um nó. i é o índice de y no vetor filho.
+void NoB::dividirFilho(int i, NoB *y) {
+    // Cria um novo nó que vai armazenar (t-1) chaves de y
+    NoB *z = new NoB(y->t, y->folha);
+    z->chaves.resize(t - 1);
+
+    // Copia as últimas (t-1) chaves de y para z
+    for (int j = 0; j < t - 1; j++)
+        z->chaves[j] = y->chaves[j + t];
+
+    // Copia os últimos t filhos de y para z, se y não for folha
+    if (!y->folha) {
+        z->filhos.resize(t);
+        for (int j = 0; j < t; j++)
+            z->filhos[j] = y->filhos[j + t];
+    }
+
+    // Reduz o número de chaves em y
+    y->chaves.resize(t - 1);
+
+    // Cria espaço para o novo filho
+    filhos.insert(filhos.begin() + i + 1, z);
+
+    // Move a chave do meio de y para este nó
+    chaves.insert(chaves.begin() + i, y->chaves[t - 1]);
+
+    // Remove a chave do meio de y, já que ela foi movida para o nó pai
+    y->chaves.erase(y->chaves.begin() + t - 1);
+}
+
+// Método para percorrer todos os nós em uma subárvore enraizada com este nó
+void NoB::percorrer() {
+    // Há n chaves e n+1 filhos, percorre através de n chaves e os primeiros n filhos
+    int i;
+    for (i = 0; i < chaves.size(); i++) {
+        // Se este não for folha, antes de imprimir chaves[i], percorre a subárvore enraizada com filho[i].
+        if (!folha)
+            filhos[i]->percorrer();
+        cout << " " << chaves[i];
+    }
+
+    // Imprime a subárvore enraizada com o último filho
+    if (!folha)
+        filhos[i]->percorrer();
+}
+
+// Método para buscar uma chave na subárvore enraizada com este nó
+NoB *NoB::buscar(int k) {
+    // Encontra a primeira chave maior ou igual a k
+    int i = 0;
+    while (i < chaves.size() && k > chaves[i])
+        i++;
+
+    // Se a chave encontrada é igual a k, retorna este nó
+    if (i < chaves.size() && chaves[i] == k)
+        return this;
+
+    // Se a chave não foi encontrada e este é um nó folha
+    if (folha)
+        return NULL;
+
+    // Vai para o filho apropriado
+    return filhos[i]->buscar(k);
+}
+
+// Método para inserir uma chave na árvore
+void TreeB::inserir(int k) {
+	// Se a árvore está vazia
+	if (raiz == NULL) {
+		// Aloca memória para raiz
+		raiz = new NoB(t, true);
+		raiz->chaves[0] = k; // Insere chave
+	} else {
+		// Se a raiz estiver cheia, então a árvore cresce em altura
+		if (raiz->chaves.size() == 2 * t - 1) {
+			// Aloca memória para novo nó
+			NoB *s = new NoB(t, false);
+
+			// Torna a antiga raiz como filha do novo nó
+			s->filhos[0] = raiz;
+
+			// Divide a antiga raiz e move uma chave para o novo nó
+			s->dividirFilho(0, raiz);
+
+			// A nova raiz tem dois filhos. Move a chave do meio de raiz para s. Decide qual dos dois filhos vai ter a nova chave e o insere
+			int i = 0;
+			if (s->chaves[0] < k)
+				i++;
+			s->filhos[i]->inserirNaoCheio(k);
+
+			// Muda a raiz
+			raiz = s;
+		} else {
+			// Se a raiz não estiver cheia, chama inserirNaoCheio para a raiz
+			raiz->inserirNaoCheio(k);
+		}
+	}
+}
+
+void TreeB::menu()
+{
+	cout<<"\n\n########################### MENU ####################################";
+	cout<<"\n#                                                                   #";
+	cout<<"\n#            [ 1 ] Inserir                 [ 1 ]                    #";
+	cout<<"\n#            [ 2 ] Buscar                  [ 2 ]                    #";
+	cout<<"\n#            [ 3 ] Percorerr				[ 3 ]                    #";
+	cout<<"\n#            [ 0 ] Sair                    [ 0 ]                    #";
+	cout<<"\n#                                                                   #";
+	cout<<"\n#####################################################################";
+}

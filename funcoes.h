@@ -1,11 +1,12 @@
 #include <iostream>
-#include <cstdlib>
-#include <stack>
+// #include <cstdlib>
+// #include <stack>
+#include <vector>
 
 using namespace std;
 
 
-class no
+/*class no
 {
 private:
     no *esq;
@@ -22,10 +23,10 @@ public:
     void setdir(no *dir);
     int getinfo();
     void setinfo(int info);
-};
+};*/
 
 
-class tree
+/*class tree
 {
 private:
     no *arv;
@@ -52,55 +53,56 @@ public:
     void menu();
     //*****************************************
 
-};
+};*/
 
-class BTreeNode {
+class NoB {
 private:
-    int *keys; // Um array de chaves
-    int t; // Grau mínimo
-    BTreeNode **C; // Um array de ponteiros para filhos
-    int n; // Número atual de chaves
-    bool leaf; // Verdadeiro se for folha
+    vector<int> chaves; // Chaves armazenadas no nó
+    vector<NoB*> filhos; // Ponteiros para os filhos
+    bool folha; // Indica se o nó é uma folha
+    int t; // Grau mínimo (cada nó deve ter pelo menos t-1 e no máximo 2t-1 chaves)
 
 public:
-    BTreeNode(int _t, bool _leaf);
-    // Métodos para inserção, remoção, etc. serão adicionados depois
+    NoB(int _t, bool _folha);
 
-    // Método para imprimir o nó - útil para depuração
-    void traverse();
+    // Métodos para inserir uma nova chave no nó não-cheio
+    void inserirNaoCheio(int k);
 
-    int getKey(int idx);
-    BTreeNode* getChild(int idx);
-    void setKey(int idx, int key);
-    void setChild(int idx, BTreeNode* child);
-    int getNumKeys();
-    bool isLeaf();
+    // Métodos para dividir o filho y deste nó. i é índice de y em filho[]
+    void dividirFilho(int i, NoB *y);
 
-    // Amigo da classe para acessar membros privados
-    friend class BTree;
+    // Função para percorrer todos os nós em uma subárvore enraizada com este nó
+    void percorrer();
+
+    // Função para buscar chave k na subárvore enraizada com este nó
+    NoB *buscar(int k);
+
+    friend class TreeB;
 };
 
-class BTree {
+class TreeB {
 private:
-    BTreeNode *root; // Ponteiro para a raiz
+    NoB *raiz; // Ponteiro para a raiz
     int t; // Grau mínimo
-
 public:
-    BTree(int _t) {
-        root = nullptr;
+    TreeB(int _t) {
+        raiz = NULL;
         t = _t;
     }
 
-    // Método para percorrer a árvore
-    void traverse() {
-        if (root != nullptr) root->traverse();
+    // Função para percorrer a árvore
+    void percorrer() {
+        if (raiz != NULL) raiz->percorrer();
     }
 
-    void insert(int k);
-    void insertNonFull(BTreeNode *node, int k); // Adicionar esta linha
-    void splitChild(BTreeNode *node, int i); // Adicionar esta linha
-    // Métodos para inserção, remoção, etc. serão adicionados depois
+    // Função para buscar chave na árvore
+    NoB* buscar(int k) {
+        return (raiz == NULL) ? NULL : raiz->buscar(k);
+    }
+
+    // A função principal que insere uma nova chave nesta árvore B
+    void inserir(int k);
+    void menu();
+
+    // Implementar outras funções aqui...
 };
-
-
-

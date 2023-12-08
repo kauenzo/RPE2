@@ -1,78 +1,51 @@
 #include "funcoes.h"
+#include <iostream>
 
 int main()
 {
-    int x,opcao;
-    tree *marv = new tree;
+    int x,opcao, t;
+    cout << "Informe o grau minimo t da arvore B: ";
+    cin >> t;
+    TreeB *marv = new TreeB(t); // Cria uma árvore B com grau mínimo t
     do
     {
         system("cls");
         marv->menu();
         cout<<"\n\n\tInforme a opcao desejada: ";
         cin>>opcao;
-        switch(opcao)
-        {
-            case 1://insere elementos
-                cout<<"Digite o valor a ser inserido: ";
-            cin>>x;
-            no *aux;
-            aux = marv->consulta(x);
-            if (aux ==NULL)
-                marv->insere(x);
+        switch(opcao) {
+            case 1: // Insere elementos
+                cout << "Digite o valor a ser inserido: ";
+            cin >> x;
+            marv->inserir(x);
+            cout << "Elemento inserido.\n";
+            break;
+
+            case 2: // Buscar
+                cout << "Digite o valor a ser buscado: ";
+            cin >> x;
+            if (marv->buscar(x) != NULL)
+                cout << "Elemento encontrado.\n";
             else
-                cout<<"Elemento já existe";
+                cout << "Elemento nao encontrado.\n";
             break;
 
-            case 2: //Remover
-                if(marv!=NULL)
-                {
-                    cout<<"Digite valor a ser removido: ";
-                    cin>>x;
-                    marv->busca_remocao(x);
-                }
-                else
-                    cout<<"Arvore Vazia";
-
+            case 3: // Percorrer
+                cout << "Arvore B em percurso: ";
+            marv->percorrer();
+            cout << "\n";
             break;
 
-            case 3: //Consulta em pre-Ordem
-                marv->preordem(marv->get() );
+            case 0: // Sair
+                cout << "Saindo...\n";
             break;
 
-            case 4: //Consulta em pos-Ordem
-                marv->posordem(marv->get());
-            break;
-
-            case 5: //consulta em in-Ordem
-                marv->inordem(marv->get());
-            break;
-
-            case 6: //Imprimir]
-                marv->imprimearvore();
-            break;
-
-            case 7: //Imprime decrescente
-                marv->decrescente(marv->get());
-            break;
-
-            case 8: // SOma elementos
-
-                x = marv->soma(marv->get(), 0);
-            cout<<"Soma dos elementos: "<<x<<"\n";
-            break;
-
-            case 9:
-                x = marv->qtdInfo(marv->get(), 0);
-            cout<<"Quantidade de elementos: "<<x<<"\n";
-            break;
-
-            case 10:
-                x= marv->qtdFolha(marv->get(), 0);
-            cout<<"Quantidade de Folhas: "<<x<<"\n";
-            break;
+            default:
+                cout << "Opção inválida!\n";
         }
         system("pause");
-    } while(opcao!=0);
-    return 1;
-}
+    } while (opcao != 0);
 
+    delete marv; // Libera a memória alocada para a árvore
+    return 0;
+}
