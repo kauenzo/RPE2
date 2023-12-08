@@ -467,19 +467,23 @@ NoB *NoB::buscar(int k) {
 // Método para inserir uma chave na árvore
 void TreeB::inserir(int k) {
 	// Se a árvore está vazia
+	cout << "DEBUG 1 - raiz: " << raiz <<endl;
 	if (raiz == NULL) {
 		// Aloca memória para raiz
 		raiz = new NoB(t, true);
 		raiz->chaves[0] = k; // Insere chave
 	} else {
+		cout << "DEBUG 2 - raiz: " << raiz <<endl;
 		// Se a raiz estiver cheia, então a árvore cresce em altura
 		if (raiz->chaves.size() == 2 * t - 1) {
+			cout << "DEBUG 3 - raiz cheia, arvore crescendo em altura"  <<endl;
 			// Aloca memória para novo nó
 			NoB *s = new NoB(t, false);
 
 			// Torna a antiga raiz como filha do novo nó
 			s->filhos[0] = raiz;
 
+			cout << "DEBUG 4 - s->filhos[0]: " << s->filhos[0] <<endl;
 			// Divide a antiga raiz e move uma chave para o novo nó
 			s->dividirFilho(0, raiz);
 
@@ -491,7 +495,9 @@ void TreeB::inserir(int k) {
 
 			// Muda a raiz
 			raiz = s;
+			cout << "DEBUG 5 - raiz alterada: " << raiz <<endl;
 		} else {
+			cout << "DEBUG 6 - raiz nao ta cheia, inserir normal" <<endl;
 			// Se a raiz não estiver cheia, chama inserirNaoCheio para a raiz
 			raiz->inserirNaoCheio(k);
 		}

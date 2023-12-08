@@ -86,18 +86,18 @@ private:
     int t; // Grau mínimo
 public:
     TreeB(int _t) {
-        raiz = NULL;
+        raiz = nullptr;
         t = _t;
     }
 
     // Função para percorrer a árvore
     void percorrer() {
-        if (raiz != NULL) raiz->percorrer();
+        if (raiz != nullptr) raiz->percorrer();
     }
 
     // Função para buscar chave na árvore
     NoB* buscar(int k) {
-        return (raiz == NULL) ? NULL : raiz->buscar(k);
+        return (raiz == nullptr) ? nullptr : raiz->buscar(k);
     }
 
     // A função principal que insere uma nova chave nesta árvore B
