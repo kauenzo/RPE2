@@ -5,7 +5,45 @@
 
 using namespace std;
 
+// Implementation of a B-tree in C++
 
+class BTree {
+public:
+    // Constructor to create an empty tree
+    BTree();
+
+    // Destructor to free the tree
+    ~BTree();
+
+    // Return true if key is present in the tree
+    bool search(int key);
+
+    // Insert a new element into the tree
+    void insert(int key);
+
+    // Print all keys of the tree in order
+    void printKeys();
+
+
+private:
+    struct Node {
+        bool isLeaf;     // Is this a leaf node?
+        int numKeys;     // Number of keys in this node
+        int keys[1024];  // Keys
+        Node* kids[1025]; // Pointers to child nodes
+    };
+
+    Node* root;
+
+    void destroy(Node* node);
+    Node* insertInternal(Node* node, int key, int& median);
+    bool searchInternal(Node* node, int key);
+    static int searchKey(int n, const int* a, int key);
+    void printKeysInternal(Node* node);
+};
+
+
+/*
 /*class no
 {
 private:
@@ -23,7 +61,7 @@ public:
     void setdir(no *dir);
     int getinfo();
     void setinfo(int info);
-};*/
+};#1#
 
 
 /*class tree
@@ -53,7 +91,7 @@ public:
     void menu();
     //*****************************************
 
-};*/
+};#1#
 
 class NoB {
 private:
@@ -105,4 +143,4 @@ public:
     void menu();
 
     // Implementar outras funções aqui...
-};
+};*/

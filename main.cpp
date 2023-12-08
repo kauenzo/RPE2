@@ -1,51 +1,53 @@
-#include "funcoes.h"
 #include <iostream>
+#include <cassert>
+#include "funcoes.h" // Substitua pelo nome correto do seu arquivo de cabeçalho
 
-int main()
-{
-    int x,opcao, t;
-    cout << "Informe o grau minimo t da arvore B: ";
-    cin >> t;
-    TreeB *marv = new TreeB(t); // Cria uma árvore B com grau mínimo t
-    do
-    {
-        system("cls");
-        marv->menu();
-        cout<<"\n\n\tInforme a opcao desejada: ";
-        cin>>opcao;
-        switch(opcao) {
-            case 1: // Insere elementos
-                cout << "Digite o valor a ser inserido: ";
-            cin >> x;
-            marv->inserir(x);
-            cout << "Elemento inserido.\n";
+using namespace std;
+
+int main() {
+    BTree b;
+    int choice, key;
+
+    while (true) {
+        cout << "\nMenu:" << endl;
+        cout << "1. Inserir chave" << endl;
+        cout << "2. Buscar chave" << endl;
+        cout << "3. Imprimir arvore" << endl;
+        cout << "4. Sair" << endl;
+        cout << "Escolha uma opcao: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "Digite a chave para inserir: ";
+            cin >> key;
+            b.insert(key);
+            cout << "Chave inserida." << endl;
             break;
 
-            case 2: // Buscar
-                cout << "Digite o valor a ser buscado: ";
-            cin >> x;
-            if (marv->buscar(x) != NULL)
-                cout << "Elemento encontrado.\n";
-            else
-                cout << "Elemento nao encontrado.\n";
+            case 2:
+                cout << "Digite a chave para buscar: ";
+            cin >> key;
+            if (b.search(key)) {
+                cout << "Chave encontrada." << endl;
+            } else {
+                cout << "Chave nao encontrada." << endl;
+            }
             break;
 
-            case 3: // Percorrer
-                cout << "Arvore B em percurso: ";
-            marv->percorrer();
-            cout << "\n";
+            case 3:
+                cout << "Arvore B:" << endl;
+            b.printKeys();
             break;
 
-            case 0: // Sair
-                cout << "Saindo...\n";
-            break;
+            case 4:
+                cout << "Saindo..." << endl;
+            return 0;
 
             default:
-                cout << "Opção inválida!\n";
+                cout << "Opção invalida. Tente novamente." << endl;
         }
-        system("pause");
-    } while (opcao != 0);
+    }
 
-    delete marv; // Libera a memória alocada para a árvore
     return 0;
 }

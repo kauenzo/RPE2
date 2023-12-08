@@ -1,4 +1,147 @@
 #include "funcoes.h"
+#include <iostream>
+#include <stdexcept>
+#include <cstring>
+
+using namespace std;
+
+BTree::BTree() {
+    root = new Node;
+    root->isLeaf = true;
+    root->numKeys = 0;
+}
+
+BTree::~BTree() {
+    destroy(root);
+}
+
+void BTree::destroy(Node* node) {
+    if (!node->isLeaf) {
+        for (int i = 0; i < node->numKeys + 1; ++i) {
+            destroy(node->kids[i]);
+        }
+    }
+    delete node;
+}
+
+bool BTree::search(int key) {
+    return searchInternal(root, key);
+}
+
+bool BTree::searchInternal(Node* node, int key) {
+    if (node->numKeys == 0) {
+        return false;
+    }
+
+    int pos = searchKey(node->numKeys, node->keys, key);
+
+    if (pos < node->numKeys && node->keys[pos] == key) {
+        return true;
+    } else {
+        return (!node->isLeaf && searchInternal(node->kids[pos], key));
+    }
+}
+
+void BTree::insert(int key) {
+    int median;
+    Node* b2 = insertInternal(root, key, median);
+
+    if (b2) {
+        Node* b1 = new Node;
+        *b1 = *root;
+
+        root->numKeys = 1;
+        root->isLeaf = false;
+        root->keys[0] = median;
+        root->kids[0] = b1;
+        root->kids[1] = b2;
+    }
+}
+
+BTree::Node* BTree::insertInternal(Node* node, int key, int& median) {
+    int pos = searchKey(node->numKeys, node->keys, key);
+
+    if (pos < node->numKeys && node->keys[pos] == key) {
+        return nullptr;
+    }
+
+    if (node->isLeaf) {
+        memmove(&node->keys[pos + 1], &node->keys[pos], sizeof(*(node->keys)) * (node->numKeys - pos));
+        node->keys[pos] = key;
+        node->numKeys++;
+    } else {
+        Node* b2 = insertInternal(node->kids[pos], key, median);
+
+        if (b2) {
+            memmove(&node->keys[pos + 1], &node->keys[pos], sizeof(*(node->keys)) * (node->numKeys - pos));
+            memmove(&node->kids[pos + 2], &node->kids[pos + 1], sizeof(*(node->kids)) * (node->numKeys - pos));
+
+            node->keys[pos] = median;
+            node->kids[pos + 1] = b2;
+            node->numKeys++;
+        }
+    }
+
+    if (node->numKeys >= 1024) {
+        median = node->keys[node->numKeys / 2];
+
+        Node* b2 = new Node;
+        b2->numKeys = node->numKeys - node->numKeys / 2 - 1;
+        b2->isLeaf = node->isLeaf;
+
+        memmove(b2->keys, &node->keys[node->numKeys / 2 + 1], sizeof(*(node->keys)) * b2->numKeys);
+        if (!node->isLeaf) {
+            memmove(b2->kids, &node->kids[node->numKeys / 2 + 1], sizeof(*(node->kids)) * (b2->numKeys + 1));
+        }
+
+        node->numKeys = node->numKeys / 2;
+
+        return b2;
+    } else {
+        return nullptr;
+    }
+}
+
+int BTree::searchKey(int n, const int* a, int key) {
+    int lo = -1;
+    int hi = n;
+
+    while (lo + 1 < hi) {
+    	int mid = (lo + hi) / 2;
+    	if (a[mid] < key) {
+    		lo = mid;
+    	} else {
+    		hi = mid;
+    	}
+    }
+
+	return hi;
+}
+
+void BTree::printKeys() {
+	printKeysInternal(root);
+	cout << endl; // Para uma nova linha após imprimir todas as chaves
+}
+
+void BTree::printKeysInternal(Node* node) {
+	if (node == nullptr) return; // Caso base: se o nó é nulo, simplesmente retorne
+
+	for (int i = 0; i < node->numKeys; ++i) {
+		if (!node->isLeaf) {
+			// Se não for um nó folha, visite primeiro o filho
+			printKeysInternal(node->kids[i]);
+		}
+		// Imprima a chave
+		cout << node->keys[i] << " ";
+	}
+
+	// Se não for um nó folha, visite o último filho
+	if (!node->isLeaf) {
+		printKeysInternal(node->kids[node->numKeys]);
+	}
+}
+
+
 
 //metodos classe no
 
@@ -358,6 +501,7 @@ void tree::menu()
 }
 */
 
+/*
 NoB::NoB(int _t, bool _folha) {
 	t = _t;
 	folha = _folha;
@@ -515,3 +659,4 @@ void TreeB::menu()
 	cout<<"\n#                                                                   #";
 	cout<<"\n#####################################################################";
 }
+*/
