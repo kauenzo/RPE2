@@ -1,0 +1,3 @@
+C:/Users/Kauenzo/CLionProjects/coral/cmake-build-debug/CMakeFiles/coral.dir
+C:/Users/Kauenzo/CLionProjects/coral/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Kauenzo/CLionProjects/coral/cmake-build-debug/CMakeFiles/rebuild_cache.dir
