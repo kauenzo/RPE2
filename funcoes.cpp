@@ -82,7 +82,7 @@ BTree::Node* BTree::insertInternal(Node* node, int key, int& median) {
         }
     }
 
-    if (node->numKeys >= 1024) {
+    if (node->numKeys >= 5) {
         median = node->keys[node->numKeys / 2];
 
         Node* b2 = new Node;
@@ -119,25 +119,31 @@ int BTree::searchKey(int n, const int* a, int key) {
 }
 
 void BTree::printKeys() {
-	printKeysInternal(root);
+	printKeysInternal(root, 0);
 	cout << endl; // Para uma nova linha após imprimir todas as chaves
 }
 
-void BTree::printKeysInternal(Node* node) {
-	if (node == nullptr) return; // Caso base: se o nó é nulo, simplesmente retorne
+void BTree::printKeysInternal(Node* node, int level) {
+	if (node == nullptr) return;
 
-	for (int i = 0; i < node->numKeys; ++i) {
-		if (!node->isLeaf) {
-			// Se não for um nó folha, visite primeiro o filho
-			printKeysInternal(node->kids[i]);
-		}
-		// Imprima a chave
-		cout << node->keys[i] << " ";
+	// Imprime indentação para o nível atual
+	for (int j = 0; j < level; ++j) {
+		cout << "    "; // 4 espaços por nível
 	}
 
-	// Se não for um nó folha, visite o último filho
+	// Imprime todas as chaves no nó
+	cout << "[";
+	for (int i = 0; i < node->numKeys; ++i) {
+		cout << node->keys[i];
+		if (i < node->numKeys - 1) cout << ", ";
+	}
+	cout << "]" << endl;
+
 	if (!node->isLeaf) {
-		printKeysInternal(node->kids[node->numKeys]);
+		// Chama recursivamente para cada filho
+		for (int i = 0; i <= node->numKeys; ++i) {
+			printKeysInternal(node->kids[i], level + 1);
+		}
 	}
 }
 

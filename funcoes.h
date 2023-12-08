@@ -29,8 +29,8 @@ private:
     struct Node {
         bool isLeaf;     // Is this a leaf node?
         int numKeys;     // Number of keys in this node
-        int keys[1024];  // Keys
-        Node* kids[1025]; // Pointers to child nodes
+        int keys[5];  // Keys
+        Node* kids[4]; // Pointers to child nodes
     };
 
     Node* root;
@@ -39,7 +39,7 @@ private:
     Node* insertInternal(Node* node, int key, int& median);
     bool searchInternal(Node* node, int key);
     static int searchKey(int n, const int* a, int key);
-    void printKeysInternal(Node* node);
+    void printKeysInternal(Node* node, int level);
 };
 
 
