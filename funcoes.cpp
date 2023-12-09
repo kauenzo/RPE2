@@ -44,7 +44,7 @@ bool BTree::searchInternal(Node* node, int key) {
 
 void BTree::insert(int key) {
     int median;
-    Node* b2 = insertInternal(root, key, median);
+    Node* b2 = insertInternal(root, key, median, 0);
 
     if (b2) {
         Node* b1 = new Node;
@@ -55,10 +55,11 @@ void BTree::insert(int key) {
         root->keys[0] = median;
         root->kids[0] = b1;
         root->kids[1] = b2;
+        root->level++;
     }
 }
 
-BTree::Node* BTree::insertInternal(Node* node, int key, int& median) {
+BTree::Node* BTree::insertInternal(Node* node, int key, int& median, int level) {
     int pos = searchKey(node->numKeys, node->keys, key);
 
     if (pos < node->numKeys && node->keys[pos] == key) {
@@ -70,7 +71,7 @@ BTree::Node* BTree::insertInternal(Node* node, int key, int& median) {
         node->keys[pos] = key;
         node->numKeys++;
     } else {
-        Node* b2 = insertInternal(node->kids[pos], key, median);
+        Node* b2 = insertInternal(node->kids[pos], key, median, level + 1);
 
         if (b2) {
             memmove(&node->keys[pos + 1], &node->keys[pos], sizeof(*(node->keys)) * (node->numKeys - pos));
@@ -82,7 +83,7 @@ BTree::Node* BTree::insertInternal(Node* node, int key, int& median) {
         }
     }
 
-    if (node->numKeys >= 5) {
+    if (node->numKeys >= 4) {
         median = node->keys[node->numKeys / 2];
 
         Node* b2 = new Node;
@@ -95,6 +96,8 @@ BTree::Node* BTree::insertInternal(Node* node, int key, int& median) {
         }
 
         node->numKeys = node->numKeys / 2;
+
+        b2->level = level;
 
         return b2;
     } else {
@@ -114,35 +117,33 @@ int BTree::searchKey(int n, const int* a, int key) {
     		hi = mid;
     	}
     }
-
 	return hi;
 }
 
 void BTree::printKeys() {
 	printKeysInternal(root, 0);
-	cout << endl; // Para uma nova linha após imprimir todas as chaves
+	cout << endl;
 }
 
-void BTree::printKeysInternal(Node* node, int level) {
-	if (node == nullptr) return;
+ void BTree::printKeysInternal(Node* node, int level) {
+    if (node == nullptr) return;
 
-	// Imprime indentação para o nível atual
-	for (int j = 0; j < level; ++j) {
-		cout << "    "; // 4 espaços por nível
-	}
+    for (int j = 0; j < level; ++j) {
+        cout << "    ";
+    }
 
-	// Imprime todas as chaves no nó
-	cout << "[";
-	for (int i = 0; i < node->numKeys; ++i) {
-		cout << node->keys[i];
-		if (i < node->numKeys - 1) cout << ", ";
-	}
-	cout << "]" << endl;
+    cout << "-->";
+    cout << "[";
+    for (int i = 0; i < node->numKeys; ++i) {
+        cout << node->keys[i];
+        if (i < node->numKeys - 1) cout << " | ";
+    }
+    cout << "]";
+    cout << "" << endl;
 
-	if (!node->isLeaf) {
-		// Chama recursivamente para cada filho
-		for (int i = 0; i <= node->numKeys; ++i) {
-			printKeysInternal(node->kids[i], level + 1);
-		}
-	}
+    if (!node->isLeaf) {
+        for (int i = 0; i <= node->numKeys; ++i) {
+            printKeysInternal(node->kids[i], level + 1);
+        }
+    }
 }
