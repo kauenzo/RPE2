@@ -184,3 +184,61 @@ void BTree::printKeysInternal(Node *node, int level)
         }
     }
 }
+
+int BTree::sumKeys() {
+    return sumKeysInternal(root);
+}
+
+int BTree::sumKeysInternal(Node* node) {
+    if (node == nullptr) return 0;
+
+    int sum = 0;
+    for (int i = 0; i < node->numKeys; ++i) {
+        sum += node->keys[i];
+    }
+
+    if (!node->isLeaf) {
+        for (int i = 0; i <= node->numKeys; ++i) {
+            sum += sumKeysInternal(node->kids[i]);
+        }
+    }
+
+    return sum;
+}
+
+int BTree::countKeys() {
+    return countKeysInternal(root);
+}
+
+int BTree::countKeysInternal(Node* node) {
+    if (node == nullptr) return 0;
+
+    int count = node->numKeys;
+
+    if (!node->isLeaf) {
+        for (int i = 0; i <= node->numKeys; ++i) {
+            count += countKeysInternal(node->kids[i]);
+        }
+    }
+
+    return count;
+}
+
+int BTree::countLeaves() {
+    return countLeavesInternal(root);
+}
+
+int BTree::countLeavesInternal(Node* node) {
+    if (node == nullptr) return 0;
+
+    if (node->isLeaf) {
+        return 1;
+    } else {
+        int count = 0;
+        for (int i = 0; i <= node->numKeys; ++i) {
+            count += countLeavesInternal(node->kids[i]);
+        }
+        return count;
+    }
+}
+

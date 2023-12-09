@@ -10,6 +10,9 @@ public:
     bool search(int key);
     void insert(int key);
     void printKeys();
+    int sumKeys();
+    int countKeys();
+    int countLeaves();
 
 private:
     struct Node
@@ -28,4 +31,7 @@ private:
     bool searchInternal(Node *node, int key);
     static int searchKey(int n, const int *a, int key);
     void printKeysInternal(Node *node, int level);
+    int sumKeysInternal(Node* node);
+    int countKeysInternal(Node* node);
+    int countLeavesInternal(Node* node);
 };

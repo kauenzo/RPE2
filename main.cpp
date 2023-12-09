@@ -10,15 +10,18 @@ int main()
 
     while (true)
     {
-        cout << "\n\n############################## MENU ##############################";
-        cout << "\n#                                                                 #";
-        cout << "\n#              [ 1 ] Inserir chave             [ 1 ]              #";
-        cout << "\n#              [ 2 ] Buscar chave              [ 2 ]              #";
-        cout << "\n#              [ 3 ] Imprimir arvore           [ 3 ]              #";
-        cout << "\n#              [ 4 ] Inserir varias chaves     [ 4 ]              #";
-        cout << "\n#              [ 0 ] Sair                      [ 0 ]              #";
-        cout << "\n#                                                                 #";
-        cout << "\n###################################################################\n";
+        cout << "\n\n############################## MENU ###################################";
+        cout << "\n#                                                                       #";
+        cout << "\n#              [ 1 ] Inserir chave                   [ 1 ]              #";
+        cout << "\n#              [ 2 ] Buscar chave                    [ 2 ]              #";
+        cout << "\n#              [ 3 ] Imprimir arvore                 [ 3 ]              #";
+        cout << "\n#              [ 4 ] Inserir varias chaves           [ 4 ]              #";
+        cout << "\n#              [ 5 ] Somar todos os valores          [ 4 ]              #";
+        cout << "\n#              [ 6 ] Exibir quantidade de elementos  [ 4 ]              #";
+        cout << "\n#              [ 7 ] Exibir quantidade de folhas     [ 4 ]              #";
+        cout << "\n#              [ 0 ] Sair                            [ 0 ]              #";
+        cout << "\n#                                                                       #";
+        cout << "\n#########################################################################\n";
 
         cout << "Escolha uma opcao:  ";
         cin >> choice;
@@ -67,6 +70,18 @@ int main()
                 b.insert(key);
                 cout << "Chave " << key << " inserida." << endl;
             }
+            break;
+
+        case 5:
+            cout << "Soma de todos os valores: " << b.sumKeys() << endl;
+            break;
+
+        case 6:
+            cout << "Quantidade de elementos: " << b.countKeys() << endl;
+            break;
+
+        case 7:
+            cout << "Quantidade de folhas: " << b.countLeaves() << endl;
             break;
 
         case 0:
